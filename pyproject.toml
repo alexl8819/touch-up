@@ -1,0 +1,24 @@
+[project]
+name = "touch-up"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "alexl8819",email = "124635195+alexl8819@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "opencv-python (>=4.12.0.88,<5.0.0.0)",
+    "numpy (==2.1.0)",
+    "pytesseract (>=0.3.13,<0.4.0)",
+    "presidio-image-redactor (>=0.0.57,<0.0.58)",
+    "gunicorn (>=24.0.0,<25.0.0)",
+    "fastapi (>=0.128.0,<0.129.0)",
+    "python-multipart (>=0.0.21,<0.0.22)",
+    "mimetypes-extension (>=0.1.0,<0.2.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
