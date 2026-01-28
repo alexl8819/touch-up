@@ -1,6 +1,6 @@
 from base64 import b64encode, b64decode
 from mime_ext import get_extension
-from cv2 import imread, imencode, imdecode, imwrite, cvtColor, threshold, equalizeHist, createCLAHE, Laplacian, CV_64F, IMREAD_COLOR, THRESH_BINARY, COLOR_BGR2GRAY, fastNlMeansDenoising
+from cv2 import imread, imencode, imdecode, imwrite, cvtColor, threshold, equalizeHist, createCLAHE, Laplacian, CV_64F, IMREAD_COLOR, THRESH_BINARY, COLOR_BGR2GRAY, fastNlMeansDenoising, resize, INTER_AREA
 
 from util import modify_path, create_buffer_from_decoded
 from datauri import parse_datauri, create_datauri_from_bytes
@@ -14,11 +14,23 @@ def _enhance_image(img):
     _, thresh = threshold(clahe_image, 100, 255, THRESH_BINARY)
     return fastNlMeansDenoising(thresh, None, 30, 7, 21)
 
+# resizes image to downscale
+def _resize_image(img, max_dim=2048):
+    h, w = img.shape[:2]
+    
+    if max(h, w) <= max_dim:
+        return img
+
+    scale = max_dim / max(h, w)
+    new_size = (int(w * scale), int(h * scale))
+    return resize(img, new_size, interpolation=INTER_AREA)
+
 def enhance_image_from_datauri(datauri):
     buf, parsed_mime = parse_datauri(datauri)
     mimetype, ext = parsed_mime
     img = imdecode(buf, IMREAD_COLOR)
-    enhanced = _enhance_image(img) 
+    downscale = _resize_image(img)
+    enhanced = _enhance_image(downscale) 
     _, encoded = imencode("{}".format(ext), enhanced)
     return create_datauri_from_bytes(encoded, mimetype)
 
