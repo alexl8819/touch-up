@@ -1,9 +1,11 @@
 from os.path import basename, splitext
 from numpy import frombuffer, uint8
 
-def modify_path(path, s):
+import numpy.typing as npt
+
+def modify_path(path, s) -> str:
     file, ext = splitext(basename(path))
     return '{}{}{}'.format(file, s, ext)
 
-def create_buffer_from_decoded(decoded):
+def create_buffer_from_decoded(decoded) -> npt.NDArray[np.uint8]:
     return frombuffer(decoded, uint8)

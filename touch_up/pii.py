@@ -3,16 +3,18 @@ from cv2 import imread, imencode, imdecode, imwrite, rectangle, IMREAD_COLOR
 from pytesseract import image_to_data, Output
 from presidio_analyzer import AnalyzerEngine, PatternRecognizer
 
+import numpy.typing as npt
+
 from touch_up.util import modify_path, create_buffer_from_decoded
 from touch_up.datauri import parse_datauri, create_datauri_from_bytes
 
-def _word_overlaps_entity(word, entity):
+def _word_overlaps_entity(word, entity) -> bool:
     return not (word["end"] <= entity.start or word["start"] >= entity.end)
 
 # Removes pii entities from an image by extracting text via ocr (tesseract) 
 # then applies a black rectangular overlay where its positioned
 # TODO: custom entities need to be passed through for better accuracy via deny-lists
-def _redact_entities(img, fields):
+def _redact_entities(img, fields) -> npt.NDArray:
     ocr = image_to_data(img, output_type=Output.DICT)
     words = []
     full_text_parts = []
@@ -58,7 +60,7 @@ def _redact_entities(img, fields):
     
     return img
 
-def redact_from_datauri(datauri: str, fields: [str] = ["PERSON", "ADDRESS", "LOCATION", "PHONE_NUMBER", "EMAIL_ADDRESS"]):
+def redact_from_datauri(datauri: str, fields: [str] = ["PERSON", "ADDRESS", "LOCATION", "PHONE_NUMBER", "EMAIL_ADDRESS"]) -> str:
     buf, parsed_mime = parse_datauri(datauri)
     mimetype, ext = parsed_mime
     img = imdecode(buf, IMREAD_COLOR)
