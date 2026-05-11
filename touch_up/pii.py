@@ -3,8 +3,8 @@ from cv2 import imread, imencode, imdecode, imwrite, rectangle, IMREAD_COLOR
 from pytesseract import image_to_data, Output
 from presidio_analyzer import AnalyzerEngine, PatternRecognizer
 
-from util import modify_path, create_buffer_from_decoded
-from datauri import parse_datauri, create_datauri_from_bytes
+from touch_up.util import modify_path, create_buffer_from_decoded
+from touch_up.datauri import parse_datauri, create_datauri_from_bytes
 
 def _word_overlaps_entity(word, entity):
     return not (word["end"] <= entity.start or word["start"] >= entity.end)
@@ -58,7 +58,7 @@ def _redact_entities(img, fields):
     
     return img
 
-def redact_from_datauri(datauri, fields=["PERSON", "ADDRESS", "LOCATION", "PHONE_NUMBER", "EMAIL_ADDRESS"]):
+def redact_from_datauri(datauri: str, fields: [str] = ["PERSON", "ADDRESS", "LOCATION", "PHONE_NUMBER", "EMAIL_ADDRESS"]):
     buf, parsed_mime = parse_datauri(datauri)
     mimetype, ext = parsed_mime
     img = imdecode(buf, IMREAD_COLOR)
@@ -66,7 +66,7 @@ def redact_from_datauri(datauri, fields=["PERSON", "ADDRESS", "LOCATION", "PHONE
     _, encoded = imencode("{}".format(ext), redacted)
     return create_datauri_from_bytes(encoded, mimetype)
 
-def redact_from_image(path, fields=["PERSON", "ADDRESS", "LOCATION", "PHONE_NUMBER", "EMAIL_ADDRESS"], postprocess="_redacted"):
+def redact_from_image(path: str, fields: [str] = ["PERSON", "ADDRESS", "LOCATION", "PHONE_NUMBER", "EMAIL_ADDRESS"], postprocess="_redacted") -> None:
     img = imread(path)
     redacted = _redact_entities(img, fields)
     imwrite(modify_path(path, postprocess), img)

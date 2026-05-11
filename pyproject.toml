@@ -12,9 +12,6 @@ dependencies = [
     "numpy (==2.1.0)",
     "pytesseract (>=0.3.13,<0.4.0)",
     "presidio-image-redactor (>=0.0.57,<0.0.58)",
-    "gunicorn (>=24.0.0,<25.0.0)",
-    "fastapi (>=0.128.0,<0.129.0)",
-    "python-multipart (>=0.0.21,<0.0.22)",
     "mimetypes-extension (>=0.1.0,<0.2.0)",
 ]
 
