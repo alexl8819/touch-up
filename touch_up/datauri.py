@@ -13,3 +13,11 @@ def parse_datauri(datauri: str) -> tuple:
     ext = get_extension(mimetype)
     buf = create_buffer_from_decoded(b64decode(data))
     return (buf, (mimetype, ext))
+
+def to_bytes(datauri: str) -> bytes:
+    header = datauri.find(',')
+
+    if header == -1:
+        raise ValueError('Unknown obj encountered')
+
+    return b64decode(datauri[header + 1:])
